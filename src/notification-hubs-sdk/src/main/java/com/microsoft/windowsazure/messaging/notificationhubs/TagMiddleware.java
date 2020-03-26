@@ -1,7 +1,12 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
+import java.util.Collection;
 import java.util.Set;
 
+/**
+ * Applies a set of tags stored in memory by this class to any {@link Installation} that is to be
+ * enriched by this class.
+ */
 public class TagMiddleware implements InstallationMiddleware {
 
     private Set<String> tags;
@@ -10,8 +15,25 @@ public class TagMiddleware implements InstallationMiddleware {
         return tags.add(tag);
     }
 
+    public boolean addTags(Collection<? extends String> tags){
+        return this.tags.addAll(tags);
+    }
+
+    /**
+     * Removes a tag from the set that will be applied to future {@link Installation} enrichments.
+     * @param tag
+     * @return
+     */
     public boolean removeTag(String tag) {
         return tags.remove(tag);
+    }
+
+    public boolean removeTags(Collection<?> tags) {
+        return this.tags.removeAll(tags);
+    }
+
+    public void clearTags() {
+        this.tags.clear();
     }
 
     public Iterable<String> getTags() {
