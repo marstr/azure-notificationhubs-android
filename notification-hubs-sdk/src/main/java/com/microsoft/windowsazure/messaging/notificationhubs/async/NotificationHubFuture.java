@@ -1,5 +1,14 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 package com.microsoft.windowsazure.messaging.notificationhubs.async;
 
+/**
+ * Tiny subset of CompletableFuture usable on Java 7.
+ * Does not throw any exception.
+ */
 public interface NotificationHubFuture<T> {
 
     /**
@@ -18,4 +27,11 @@ public interface NotificationHubFuture<T> {
      */
     void thenAccept(NotificationHubConsumer<T> function);
 
+    /**
+     * Returns true if completed.
+     *
+     * @return true if completed, false otherwise.
+     */
+    @SuppressWarnings("unused")
+    boolean isDone();
 }

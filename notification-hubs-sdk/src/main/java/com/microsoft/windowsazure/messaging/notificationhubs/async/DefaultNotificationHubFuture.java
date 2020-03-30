@@ -57,6 +57,16 @@ public class DefaultNotificationHubFuture<T> implements NotificationHubFuture<T>
         }
     }
 
+    @Override
+    public boolean isDone() {
+        while (true) {
+            try {
+                return mLatch.await(0, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException ignored) {
+            }
+        }
+    }
+
     /**
      * Set result.
      *
