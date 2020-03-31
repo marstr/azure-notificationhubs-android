@@ -63,9 +63,9 @@ public class DefaultNotificationHubFuture<T> implements NotificationHubFuture<T>
             try {
                 return mLatch.await(0, TimeUnit.MILLISECONDS);
             } catch (InterruptedException ignored) {
+                return true;
             }
         }
-        return false;
     }
 
     /**

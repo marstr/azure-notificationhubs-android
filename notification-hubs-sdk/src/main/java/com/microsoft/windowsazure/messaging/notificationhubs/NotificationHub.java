@@ -2,9 +2,14 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+
 import java.util.Collection;
 
-public final class NotificationHub {
+public final class NotificationHub extends FirebaseMessagingService {
     private static NotificationHub instance;
 
     private InstallationManager manager;
@@ -13,6 +18,9 @@ public final class NotificationHub {
     private TagMiddleware tagMiddleware;
     private TemplateMiddleware templateMiddleware;
     private InstallationEnricher enricher;
+    private Application mApp;
+
+    private NotificationListener mListener;
 
     /**
      * Stores the most recent result of fully enriching an {@link Installation}.
@@ -45,6 +53,7 @@ public final class NotificationHub {
         this.enricher = pushChannelMiddleware.getInstallationEnricher(this.enricher);
 
         this.manager = manager;
+        this.mApp = app;
     }
 
     public static NotificationHub getInstance() {
@@ -172,5 +181,18 @@ public final class NotificationHub {
 
     private static InstallationMiddleware defaultMiddleware() {
         return new NoopMiddleware();
+    }
+
+    public void setListener(NotificationListener mListener) {
+        this.mListener = mListener;
+    }
+
+    @Override
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
+        super.onMessageReceived(remoteMessage);
+
+        mListener.onNotificationReceived(null, remoteMessage);
+
+
     }
 }

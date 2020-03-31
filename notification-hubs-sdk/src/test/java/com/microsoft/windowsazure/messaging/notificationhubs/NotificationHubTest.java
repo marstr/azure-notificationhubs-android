@@ -1,6 +1,5 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashSet;
