@@ -2,6 +2,8 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.app.Application;
 
+import java.util.Collection;
+
 public final class NotificationHub {
     private static NotificationHub instance;
 
@@ -18,15 +20,15 @@ public final class NotificationHub {
     private Installation currentInstallation;
 
 
-    private NotificationHub(Application app, String connectionString, String hubName) {
+    NotificationHub(Application app, String connectionString, String hubName) {
         this(app, connectionString, hubName, defaultMiddleware(), defaultManager());
     }
 
-    private NotificationHub(Application app, String connectionString, String hubName, InstallationMiddleware middleware) {
+    NotificationHub(Application app, String connectionString, String hubName, InstallationMiddleware middleware) {
         this(app, connectionString, hubName, middleware, defaultManager());
     }
 
-    private NotificationHub(Application app, String connectionString, String hubName, InstallationManager manager) {
+    NotificationHub(Application app, String connectionString, String hubName, InstallationManager manager) {
         this(app, connectionString, hubName, defaultMiddleware(), manager);
     }
 
@@ -100,6 +102,14 @@ public final class NotificationHub {
         return false;
     }
 
+    public boolean addInstanceTags(Collection<? extends String> tags) {
+        if (tagMiddleware.addTags(tags)){
+            reinstallInstance();
+            return true;
+        }
+        return false;
+    }
+
     public static boolean removeTag(String tag){
         return getInstance().removeInstanceTag(tag);
     }
@@ -112,8 +122,35 @@ public final class NotificationHub {
         return false;
     }
 
+    public static InstallationTemplate getTemplate(String name) {
+        return getInstance().getInstanceTemplate(name);
+    }
+
     public InstallationTemplate getInstanceTemplate(String name) {
+        if (currentInstallation == null) {
+            return templateMiddleware.getTemplate(name);
+        }
         return currentInstallation.getTemplate(name);
+    }
+
+    public static boolean addTemplate(String name, InstallationTemplate template) {
+        return getInstance().addInstanceTemplate(name, template);
+    }
+
+    public boolean addInstanceTemplate(String name, InstallationTemplate template) {
+        if(templateMiddleware.addTemplate(name, template)) {
+            reinstallInstance();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeInstanceTemplate(String name) {
+        if(templateMiddleware.removeTemplate(name)) {
+            reinstallInstance();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -130,7 +167,7 @@ public final class NotificationHub {
     }
 
     private static InstallationManager defaultManager() {
-        return new NoopInstallationManager();
+        return new DebounceInstallationManager(new NoopInstallationManager());
     }
 
     private static InstallationMiddleware defaultMiddleware() {

@@ -2,7 +2,6 @@ package com.microsoft.windowsazure.messaging.notificationhubs.async;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.VisibleForTesting;
 
 /**
  * Utilities related to Handler class.
@@ -12,7 +11,6 @@ public class HandlerExtensions {
     /**
      * Main/UI thread Handler.
      */
-    @VisibleForTesting
     static final Handler sMainHandler = new Handler(Looper.getMainLooper());
 
     /**

@@ -18,4 +18,6 @@ public interface NotificationHubFuture<T> {
      */
     void thenAccept(NotificationHubConsumer<T> function);
 
+    boolean isDone();
+
 }

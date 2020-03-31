@@ -2,6 +2,8 @@ package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,6 +14,11 @@ public class Installation {
     private String platform;
     private String pushChannel;
     private Map<String, InstallationTemplate> templates;
+
+    public Installation() {
+        tags = new HashSet<String>();
+        templates = new HashMap<String, InstallationTemplate>();
+    }
 
     /**
      * Asserts that this installation has a particular tag.
