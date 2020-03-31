@@ -7,7 +7,7 @@ package com.microsoft.windowsazure.messaging.notificationhubs.async;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 /**
  * Utilities related to Handler class.

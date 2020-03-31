@@ -25,5 +25,5 @@ ext {
     compileSdkVersion = 28
     targetSdkVersion = 28
     minSdkVersion = 19 // Using Version 19 because of ZuMo dependency. Should be reverted to 16.
-    supportLibVersion = "26.1.0"
+    supportLibVersion = "28.0.0"
 }

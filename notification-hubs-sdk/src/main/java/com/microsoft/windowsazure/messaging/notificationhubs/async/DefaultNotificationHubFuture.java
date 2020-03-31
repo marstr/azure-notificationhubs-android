@@ -77,7 +77,7 @@ public class DefaultNotificationHubFuture<T> implements NotificationHubFuture<T>
             mResult = value;
             mLatch.countDown();
             if (mConsumers != null) {
-                HandlerUtils.runOnUiThread(new Runnable() {
+                HandlerExtensions.runOnUiThread(new Runnable() {
 
                     @Override
                     public void run() {
