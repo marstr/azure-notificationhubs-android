@@ -1,6 +1,7 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -17,6 +18,10 @@ public class TagMiddleware implements InstallationMiddleware {
 
     public boolean addTags(Collection<? extends String> tags){
         return this.tags.addAll(tags);
+    }
+
+    public TagMiddleware(){
+        tags = new HashSet<String>();
     }
 
     /**
@@ -46,7 +51,9 @@ public class TagMiddleware implements InstallationMiddleware {
             for (String tag: getTags()) {
                 subject.addTag(tag);
             }
-            next.enrichInstallation(subject);
+            if (next != null) {
+                next.enrichInstallation(subject);
+            }
         };
     }
 }

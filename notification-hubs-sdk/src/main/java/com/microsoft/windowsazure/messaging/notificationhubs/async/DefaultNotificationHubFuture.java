@@ -65,6 +65,7 @@ public class DefaultNotificationHubFuture<T> implements NotificationHubFuture<T>
             } catch (InterruptedException ignored) {
             }
         }
+        return false;
     }
 
     /**

@@ -17,7 +17,6 @@ public class HandlerExtensions {
     /**
      * Main/UI thread Handler.
      */
-    @VisibleForTesting
     static final Handler sMainHandler = new Handler(Looper.getMainLooper());
 
     /**
