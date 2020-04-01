@@ -79,4 +79,12 @@ public class Installation {
     public void setPlatform(String platform) {
         this.platform = platform;
     }
+
+    public String getPushChannel() {
+        return pushChannel;
+    }
+
+    public void setPushChannel(String pushChannel) {
+        this.pushChannel = pushChannel;
+    }
 }

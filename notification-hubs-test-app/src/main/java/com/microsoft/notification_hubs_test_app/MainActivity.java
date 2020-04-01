@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.microsoft.windowsazure.messaging.notificationhubs.NotificationHub;
 
 import android.content.Intent;
 import android.util.Log;
@@ -21,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private SharedPreferences.OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = null;
+
+    private static final String AccessPolicy = "Endpoint=sb://marstr-fcm-tutorials.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=9maoDX5iLZqhfK7hhqK5qSIzoY4TecAyAgL0R+w48Gc=";
+    private static final String HubName = "marstr-fcm-tutorial";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        NotificationHub.initialize(getApplication(), AccessPolicy, HubName);
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
 
@@ -48,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         mainActivity = this;
         NotificationHelper.createChannelAndHandleNotifications(getApplicationContext());
+
     }
 
     @Override
@@ -95,22 +102,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void onRegisterClick(View view) {
-        registerWithNotificationHubs();
-//        Button registerButton = (Button) findViewById(R.id.registerButton);
-//        Button unregisterButton = (Button) findViewById(R.id.unregisterButton);
-//        registerButton.setEnabled(false);
-//        unregisterButton.setEnabled(true);
-    }
-
-    public void onUnregisterClick(View view) {
-        unregisterFromNotificationHubs();
-//        Button registerButton = (Button) findViewById(R.id.registerButton);
-//        Button unregisterButton = (Button) findViewById(R.id.unregisterButton);
-//        registerButton.setEnabled(true);
-//        unregisterButton.setEnabled(false);
-    }
-
     /**
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog that allows users to download the APK from
@@ -132,29 +123,6 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         return true;
-    }
-
-    private void registerWithNotificationHubs()
-    {
-        if (checkPlayServices()) {
-            // Start IntentService to register this application with FCM.
-            EditText tagsText = (EditText) findViewById(R.id.tagsText);
-
-            Intent intent = new Intent(this, RegistrationIntentService.class);
-            intent.putExtra(RegistrationIntentService.TAGS_KEY, tagsText.getText().toString());
-
-            startService(intent);
-        }
-    }
-
-    private void unregisterFromNotificationHubs() {
-        if (checkPlayServices()) {
-            // Start IntentService to unregister this application with FCM.
-
-            Intent intent = new Intent(this, UnregistrationIntentService.class);
-
-            startService(intent);
-        }
     }
 
     private void updateRegistrationID(String value) {

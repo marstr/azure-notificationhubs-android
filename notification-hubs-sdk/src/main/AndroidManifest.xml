@@ -6,7 +6,9 @@
 
     <application>
         <service
-            android:name=".notificationhubs.NotificationHub"
+            android:name=".notificationhubs.NotificationHub">
+        </service>
+        <service android:name=".notificationhubs.Receiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

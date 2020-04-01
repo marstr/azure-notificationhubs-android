@@ -8,6 +8,12 @@ if (secretsPropertiesFile.exists()) {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    
     defaultConfig {
         applicationId "com.microsoft.notification_hubs_test_app"
         minSdkVersion rootProject.ext.minSdkVersion

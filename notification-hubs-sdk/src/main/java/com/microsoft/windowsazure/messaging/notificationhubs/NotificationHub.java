@@ -1,15 +1,13 @@
 package com.microsoft.windowsazure.messaging.notificationhubs;
 
 import android.app.Application;
-
-import androidx.annotation.NonNull;
-
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 
 import java.util.Collection;
 
-public final class NotificationHub extends FirebaseMessagingService {
+public final class NotificationHub extends BroadcastReceiver {
     private static NotificationHub instance;
 
     private InstallationManager manager;
@@ -18,7 +16,7 @@ public final class NotificationHub extends FirebaseMessagingService {
     private TagMiddleware tagMiddleware;
     private TemplateMiddleware templateMiddleware;
     private InstallationEnricher enricher;
-    private Application mApp;
+    private Application mApplication;
 
     private NotificationListener mListener;
 
@@ -53,10 +51,10 @@ public final class NotificationHub extends FirebaseMessagingService {
         this.enricher = pushChannelMiddleware.getInstallationEnricher(this.enricher);
 
         this.manager = manager;
-        this.mApp = app;
+        this.mApplication = app;
     }
 
-    public static NotificationHub getInstance() {
+    public synchronized static NotificationHub getInstance() {
         return instance;
     }
 
@@ -188,11 +186,17 @@ public final class NotificationHub extends FirebaseMessagingService {
     }
 
     @Override
-    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        super.onMessageReceived(remoteMessage);
+    public void onReceive(Context context, Intent intent) {
+        // TODO: call users's listener.
+        //mListener.onNotificationReceived(context, intent);
+    }
 
-        mListener.onNotificationReceived(null, remoteMessage);
+    static void setPushChannel(String token) {
+        getInstance().setInstancePushChannel(token);
+    }
 
-
+    void setInstancePushChannel(String token) {
+        pushChannelMiddleware.setCurrentToken(token);
+        reinstallInstance();
     }
 }
