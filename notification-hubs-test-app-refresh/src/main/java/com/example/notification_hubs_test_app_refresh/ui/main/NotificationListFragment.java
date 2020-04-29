@@ -39,13 +39,6 @@ public class NotificationListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(NotificationListViewModel.class);
-
-        mViewModel.addNotification(new NotificationMessage("Puppies for Adoption!", "6 puppies born Sunday, each could be yours for just $100,000.00.", new HashMap<String,String>()));
-
-        Map<String, String> catData = new HashMap<>();
-        catData.put("feline", "yes");
-        catData.put("fun", "no");
-        mViewModel.addNotification(new NotificationMessage("Kittens for pickup!", "Please take them, we can't handle it!", catData));
     }
 
     @Override

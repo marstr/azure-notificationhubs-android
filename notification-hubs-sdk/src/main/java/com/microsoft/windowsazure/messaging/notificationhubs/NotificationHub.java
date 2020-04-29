@@ -105,6 +105,8 @@ public final class NotificationHub {
         IntentFilter connectivityFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         connectivityFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
         application.registerReceiver(new NetworkStatusReceiver(), connectivityFilter);
+
+        instance.mApplication.registerActivityLifecycleCallbacks(new LaunchDetector(instance));
     }
 
     /**
