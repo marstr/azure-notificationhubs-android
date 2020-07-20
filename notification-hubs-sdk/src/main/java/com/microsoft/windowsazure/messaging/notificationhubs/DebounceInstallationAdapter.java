@@ -13,22 +13,16 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Protects the {@link InstallationAdapter} from rapid changes to the current Installation, as well
- * as weeding out calls that match the last request that was sent to the server.
+ * Protects the {@link InstallationAdapter} from rapid changes to the current Installation.
  */
 public class DebounceInstallationAdapter implements InstallationAdapter {
 
-    static final String LAST_ACCEPTED_HASH_KEY = "lastAcceptedHash";
-    static final String LAST_ACCEPTED_TIMESTAMP_KEY= "lastAcceptedTimestamp";
     private static final long DEFAULT_DEBOUNCE_INTERVAL = 2000L; // Two seconds
-    private static final long DEFAULT_INSTALLATION_STALE_MILLIS = 1000L * 60L * 60L * 24L; // One day's worth of milliseconds
 
     private final ScheduledExecutorService mScheduler = Executors.newScheduledThreadPool(1);
     private InstallationAdapter mInstallationAdapter;
     private long mInterval;
     private ScheduledFuture<?> mSchedFuture;
-    private SharedPreferences mPreferences;
-    private long mInstallationStaleMillis;
 
     /**
      * Creates a new instance which decorates a given {@link InstallationAdapter} with all default
@@ -57,36 +51,14 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
         super();
         mInstallationAdapter = installationAdapter;
         mInterval = interval;
-        mPreferences = context.getSharedPreferences(context.getString(R.string.installation_enrichment_file_key), Context.MODE_MULTI_PROCESS);
-        mInstallationStaleMillis = DEFAULT_INSTALLATION_STALE_MILLIS;
     }
 
-    /**
-     * Sets the maximum amount of time that this instance will wait before allowing what would have
-     * otherwise been a duplicate {@link Installation} through.
-     * @param millis The number of milliseconds before an {@link Installation} should be considered stale.
-     */
-    public void setInstallationStaleWindow(long millis) {
-        mInstallationStaleMillis = millis;
-    }
 
     @Override
     public void saveInstallation(final Installation installation, final Listener onInstallationSaved, final ErrorListener onInstallationSaveError) {
         if (mSchedFuture != null && !mSchedFuture.isDone()) {
             mSchedFuture.cancel(true);
         }
-
-        final int currentHash = installation.hashCode();
-        int recentHash = getLastAcceptedHash();
-
-        boolean sameAsLastAccepted = recentHash != 0 && recentHash == currentHash;
-        final long currentTime = new Date().getTime();
-        boolean lastAcceptedIsRecent =  currentTime < getLastAcceptedTimestamp() + mInstallationStaleMillis;
-
-        if (sameAsLastAccepted && lastAcceptedIsRecent) {
-            return;
-        }
-
 
         mSchedFuture = mScheduler.schedule(new Runnable() {
             @Override
@@ -102,11 +74,4 @@ public class DebounceInstallationAdapter implements InstallationAdapter {
         }, mInterval, TimeUnit.MILLISECONDS);
     }
 
-    long getLastAcceptedTimestamp() {
-        return mPreferences.getLong(LAST_ACCEPTED_TIMESTAMP_KEY, Long.MIN_VALUE);
-    }
-
-    int getLastAcceptedHash() {
-        return mPreferences.getInt(LAST_ACCEPTED_HASH_KEY, 0);
-    }
 }
