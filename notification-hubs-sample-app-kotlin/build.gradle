@@ -42,6 +42,11 @@ android {
             dimension 'push-provider'
             applicationIdSuffix '.fcm'
         }
+
+        adm {
+            dimension 'push-provider'
+            applicationIdSuffix '.adm'
+        }
     }
 }
 

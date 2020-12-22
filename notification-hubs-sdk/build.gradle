@@ -37,6 +37,11 @@ android {
         general {
             dimension "push-provider"
         }
+
+        adm {
+            dimension "push-provider"
+            versionNameSuffix "-adm"
+        }
     }
 
     lintOptions {
